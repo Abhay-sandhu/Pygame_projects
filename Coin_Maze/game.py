@@ -1,7 +1,7 @@
 import pygame
 from pygame import sprite
 import Coin_Maze
-from Coin_Maze import COINS
+
 Coin_Maze.game_init()
 
 RED = (255, 0, 0, 255)     # Fully opaque red
@@ -25,7 +25,7 @@ font = pygame.font.Font(None, 30)
 font.set_bold(True)
 win_text = font.render('YOU WIN!', 1, GREEN)
 lose_text = font.render('YOU LOSE!', 1, RED)
-coin_text = font.render(f'COINS: {COINS}', 1, WHITE)
+
 
 pygame.mixer.music.load('Coin_Maze/assets/cave.mp3')
 pygame.mixer.music.set_volume(VOLUME * 0.66)
@@ -39,10 +39,11 @@ coin_sound.set_volume(VOLUME)
 lose_sound.set_volume(VOLUME)
 win_sound.set_volume(VOLUME)
 
-player = Coin_Maze.Player('Coin_Maze/assets/miner.png', screen, 50, 50, 5)
-#ghost = Coin_Maze.Enemy('Coin_Maze/assets/ghost.png', screen, 200, 200, 4)
-coins = Coin_Maze.Coins('Coin_Maze/assets/dollar.png', screen)
-wall = Coin_Maze.Walls(screen, WALL_COLOR, 400, 400, 20, 200)
+player = Coin_Maze.Player('Coin_Maze/assets/miner.png', 50, 50, 5)
+ghost = Coin_Maze.Enemy('Coin_Maze/assets/ghost.png', 200, 200, 4)
+
+coins = Coin_Maze.Coins('Coin_Maze/assets/dollar.png')
+wall = Coin_Maze.Walls(WALL_COLOR, 400, 400, 20, 200)
 
 end = False
 run = True
@@ -52,11 +53,18 @@ while run:
             run = False
     if end != True:
         screen.blit(background, (0,0))
+        coin_text = font.render(f'COINS: {COINS}', 1, WHITE)
         screen.blit(coin_text, (WIDTH - 150, 20))
-        coins.draw_coin()
         wall.build_wall()
+        player.update()
+        player.control()
+        ghost.update()
+        if player.rect.colliderect(coins.rect):
+            coin_sound.play()
+            coins.kill()
+            COINS += 1
+            coins.draw_coin()
         #game code
-
 
     pygame.display.update()
     clock.tick(FPS)

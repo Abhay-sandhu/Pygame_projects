@@ -14,13 +14,13 @@ from pygame import (
     display
 )
 
-COINS = 0
 WIDTH = 800
 HEIGHT = 600
 WALL_COLOR = Color(52,82,63)
 screen = display.set_mode((WIDTH,HEIGHT))
+
 class Main(sprite.Sprite):
-    def init(self, image_file, x, y, speed):
+    def __init__(self, image_file, x, y, speed):
         super().__init__()
         self.speed = speed
         self.image = transform.scale(
@@ -69,13 +69,6 @@ class Coins(sprite.Sprite):
     def draw_coin(self):
         screen.blit(self.image, self.rect)
 
-    def collect_coin(self, player_rect):
-        global COINS
-        if self.rect.colliderect(player_rect):
-            self.kill()
-            COINS += 1
-
-
 class Walls(sprite.Sprite):
     def __init__(self, color, x, y, width, height):
         super().__init__()
@@ -83,7 +76,7 @@ class Walls(sprite.Sprite):
         self.wall = Rect(x, y, width, height)
 
     def build_wall(self):
-        wall = draw.rect(self.screen, self.color, self.wall)
+        wall = draw.rect(screen, self.color, self.wall)
 
 def game_init():
     pygame.init()
