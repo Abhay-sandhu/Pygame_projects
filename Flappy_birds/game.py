@@ -38,15 +38,25 @@ class Bird(Main):
 
 
 class Pipe:
-    def __init__(self, screen,  x, y, speed):
+    def __init__(self, screen, file, x, y, speed):
         self.screen = screen
-        self.width = 70
+        self.width = 100
         self.height = random.randint(10, 400)
         self.speed = speed
-        self.top_pipe = Rect(x, y, self.width, self.height)
-        self.bottom_pipe = Rect(
-            x, y + self.height + 200, self.width, HEIGHT - self.height - 200
-        )
+        
+        self.top_image        = transform.scale(image.load(file), (self.width, self.height))
+        self.bottom_image = transform.rotate(transform.scale(image.load(file), (self.width, HEIGHT - self.height - 200)), 180)
+        
+        #self.top_pipe = Rect(x, y, self.width, self.height)
+        #self.bottom_pipe = Rect(x, y + self.height + 200, self.width, HEIGHT - self.height - 200)
+        
+        self.top_pipe = self.top_image.get_rect()
+        self.top_pipe.x = x
+        self.top_pipe.y = y
+
+        self.bottom_pipe = self.top_image.get_rect()
+        self.bottom_pipe.x = x
+        self.bottom_pipe.y = y + self.height + 200
 
     def update(self):
         self.top_pipe.x -= self.speed
@@ -54,8 +64,11 @@ class Pipe:
         self.reset()
 
     def draw_pipe(self):
-        draw.rect(self.screen, Color(255, 255, 255, 255), self.top_pipe)
-        draw.rect(self.screen, Color(255, 255, 255, 255), self.bottom_pipe)
+        #draw.rect(self.screen, Color(255, 255, 255, 255), self.top_pipe)
+        #draw.rect(self.screen, Color(255, 255, 255, 255), self.bottom_pipe)
+
+        self.screen.blit(self.top_image, (self.top_pipe.x, self.top_pipe.y))
+        self.screen.blit(self.bottom_image, (self.bottom_pipe.x, self.bottom_pipe.y))
 
     def reset(self):
         if self.top_pipe.x < -self.width:
@@ -69,8 +82,8 @@ pygame.init()
 WIDTH = 700
 HEIGHT = 650
 FPS = 60
-BIRD_SPEED = 4
-PIPE_SPEED = 3
+BIRD_SPEED = 5
+PIPE_SPEED = 4
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
@@ -78,8 +91,8 @@ clock = pygame.time.Clock()
 background = transform.scale(
     image.load("Flappy_birds/assets/background.jpg"), (WIDTH, HEIGHT)
 )
-bird = Bird(screen, "Flappy_birds/assets/bird.png", 300, 200, BIRD_SPEED)
-pipes = [Pipe(screen, WIDTH + i * 400, 10, PIPE_SPEED) for i in range(2)]
+bird = Bird(screen, "Flappy_birds/assets/bird2.png", 300, 200, BIRD_SPEED)
+pipes = [Pipe(screen, "Flappy_birds/assets/pipe.png", WIDTH + i * 400, 0, PIPE_SPEED) for i in range(2)]
 
 run = True
 while run:
