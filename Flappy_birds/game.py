@@ -1,5 +1,18 @@
 import pygame
-from pygame import transform, image, key, K_SPACE, KEYUP, KEYDOWN, Rect, draw, Color, font, mixer, sprite
+from pygame import (
+    transform,
+    image,
+    key,
+    K_SPACE,
+    KEYUP,
+    KEYDOWN,
+    Rect,
+    draw,
+    Color,
+    font,
+    mixer,
+    sprite,
+)
 import random
 
 
@@ -28,6 +41,7 @@ class Bird(Main):
         elif self.rect.y < HEIGHT - bird.rect.height:
             self.rect.y += self.speed
             self.angle = min(-15, self.angle + self.speed)
+
     def update(self):
         rotated_image = transform.rotate(self.image, self.angle)
         self.screen.blit(rotated_image, (self.rect.x, self.rect.y))
@@ -42,11 +56,14 @@ class Pipe(sprite.Sprite):
         self.height = random.randint(10, 400)
         self.speed = speed
         self.top_image = transform.scale(image.load(file), (self.width, self.height))
-        self.bottom_image = transform.rotate(transform.scale(image.load(file), (self.width, HEIGHT - self.height - 200)), 180)
-        
-        #self.top_pipe = Rect(x, y, self.width, self.height)
-        #self.bottom_pipe = Rect(x, y + self.height + 200, self.width, HEIGHT - self.height - 200)
-        
+        self.bottom_image = transform.rotate(
+            transform.scale(image.load(file), (self.width, HEIGHT - self.height - 200)),
+            180,
+        )
+
+        # self.top_pipe = Rect(x, y, self.width, self.height)
+        # self.bottom_pipe = Rect(x, y + self.height + 200, self.width, HEIGHT - self.height - 200)
+
         self.top_pipe = self.top_image.get_rect()
         self.top_pipe.x = x
         self.top_pipe.y = y
@@ -65,8 +82,8 @@ class Pipe(sprite.Sprite):
             self.reset()
 
     def draw_pipe(self):
-        #draw.rect(self.screen, Color(255, 255, 255, 255), self.top_pipe)
-        #draw.rect(self.screen, Color(255, 255, 255, 255), self.bottom_pipe)
+        # draw.rect(self.screen, Color(255, 255, 255, 255), self.top_pipe)
+        # draw.rect(self.screen, Color(255, 255, 255, 255), self.bottom_pipe)
 
         self.screen.blit(self.top_image, (self.top_pipe.x, self.top_pipe.y))
         self.screen.blit(self.bottom_image, (self.bottom_pipe.x, self.bottom_pipe.y))
@@ -78,11 +95,12 @@ class Pipe(sprite.Sprite):
             self.height = random.randint(100, 300)
 
 
-def collision_check( rect, top_pipe_rect, bottom_pipe_rect):
-    if rect.colliderect (top_pipe_rect) or bird.rect.colliderect(bottom_pipe_rect):
-            collision_sound.play()
-            return True
+def collision_check(rect, top_pipe_rect, bottom_pipe_rect):
+    if rect.colliderect(top_pipe_rect) or bird.rect.colliderect(bottom_pipe_rect):
+        collision_sound.play()
+        return True
     return False
+
 
 pygame.init()
 mixer.init()
@@ -103,21 +121,24 @@ background = transform.scale(
     image.load("Flappy_birds/assets/background.jpg"), (WIDTH, HEIGHT)
 )
 
-mixer.music.load('Flappy_birds/assets/A Short Walk With You.mp3')
+mixer.music.load("Flappy_birds/assets/A Short Walk With You.mp3")
 mixer.music.set_volume(VOLUME * 0.5)
 mixer.music.play(-1, 0, 4000)
 
 
-score_sound = mixer.Sound('Flappy_birds/assets/sfx_point.wav')
-collision_sound = mixer.Sound('Flappy_birds/assets/sfx_die.wav')
-wing_flap_sound = mixer.Sound('Flappy_birds/assets/sfx_wing_flap.wav')
+score_sound = mixer.Sound("Flappy_birds/assets/sfx_point.wav")
+collision_sound = mixer.Sound("Flappy_birds/assets/sfx_die.wav")
+wing_flap_sound = mixer.Sound("Flappy_birds/assets/sfx_wing_flap.wav")
 
 wing_flap_sound.set_volume(VOLUME * 0.5)
 score_sound.set_volume(VOLUME)
 collision_sound.set_volume(VOLUME)
 
 bird = Bird(screen, "Flappy_birds/assets/bird2.png", 300, 200, BIRD_SPEED)
-pipes = [Pipe(screen, "Flappy_birds/assets/pipe.png", WIDTH + i * 400, 0, PIPE_SPEED) for i in range(2)]
+pipes = [
+    Pipe(screen, "Flappy_birds/assets/pipe.png", WIDTH + i * 400, 0, PIPE_SPEED)
+    for i in range(2)
+]
 
 score_font = font.SysFont("Comic Sans MS", 25)
 
@@ -137,7 +158,7 @@ while run:
 
     screen.blit(background, (0, 0))
     bird.control(flap)
-    bird.update() 
+    bird.update()
     for pipe in pipes:
         pipe.draw_pipe()
         pipe.update()
