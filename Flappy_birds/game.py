@@ -1,5 +1,5 @@
 import pygame
-from pygame import transform, image, key, K_SPACE, Rect, draw, Color
+from pygame import transform, image, key, K_SPACE, Rect, draw, Color, font
 import random
 
 
@@ -43,8 +43,7 @@ class Pipe:
         self.width = 100
         self.height = random.randint(10, 400)
         self.speed = speed
-        
-        self.top_image        = transform.scale(image.load(file), (self.width, self.height))
+        self.top_image = transform.scale(image.load(file), (self.width, self.height))
         self.bottom_image = transform.rotate(transform.scale(image.load(file), (self.width, HEIGHT - self.height - 200)), 180)
         
         #self.top_pipe = Rect(x, y, self.width, self.height)
@@ -59,9 +58,12 @@ class Pipe:
         self.bottom_pipe.y = y + self.height + 200
 
     def update(self):
+        global score
         self.top_pipe.x -= self.speed
         self.bottom_pipe.x -= self.speed
-        self.reset()
+        if self.top_pipe.x < -self.width:
+            score += 1
+            self.reset()
 
     def draw_pipe(self):
         #draw.rect(self.screen, Color(255, 255, 255, 255), self.top_pipe)
@@ -84,6 +86,7 @@ HEIGHT = 650
 FPS = 60
 BIRD_SPEED = 5
 PIPE_SPEED = 4
+score = 0
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
@@ -94,6 +97,8 @@ background = transform.scale(
 bird = Bird(screen, "Flappy_birds/assets/bird2.png", 300, 200, BIRD_SPEED)
 pipes = [Pipe(screen, "Flappy_birds/assets/pipe.png", WIDTH + i * 400, 0, PIPE_SPEED) for i in range(2)]
 
+font.init()
+score_font = font.SysFont("Comic Sans MS", 25)
 run = True
 while run:
     for event in pygame.event.get():
@@ -106,6 +111,8 @@ while run:
     for pipe in pipes:
         pipe.draw_pipe()
         pipe.update()
+        score_text = score_font.render(f"Score: { score}", True, (255, 255, 255))
+        screen.blit(score_text, (100, 10))
         if bird.rect.colliderect (pipe.top_pipe) or bird.rect.colliderect(pipe.bottom_pipe):
             print("GAME OVER")
             run = False
