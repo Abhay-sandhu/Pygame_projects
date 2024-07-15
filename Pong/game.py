@@ -1,9 +1,11 @@
 import pygame
-from pygame import transform, image, key, Color, K_UP, K_DOWN, K_w, K_s
+from pygame import transform, image, key, Color, K_UP, K_DOWN, K_w, K_s, mixer
 
 pygame.init()
+mixer.init()
 
-WIDTH = 800
+VOLUME = 0.05
+WIDTH = 1200
 HEIGHT = 600
 PADDLE_WIDTH = 15
 PADDLE_HEIGHT = 100
@@ -26,7 +28,12 @@ pygame.display.set_caption("PONG!")
 clock = pygame.time.Clock()
 background = transform.scale(image.load("Pong/assets/bricks_background.jpg"), (WIDTH, HEIGHT))
 myfont = pygame.font.SysFont("Comic Sans MS", 36)
+mixer.music.load('Pong/assets/stranger-things.mp3')
+mixer.music.set_volume(VOLUME)
+mixer.music.play()
 
+bounce = mixer.Sound('Pong/assets/sfx_boing.mp3')
+bounce.set_volume(VOLUME * 0.5)
 
 # draw paddle
 def draw_paddle(x, y):
@@ -45,12 +52,15 @@ def update_ball():
     # bounce against wall
     if (HEIGHT - BALL_RADIUS) < ball_y or ball_y < (BALL_RADIUS) :
         BALL_SPEED_Y *= -1
+        bounce.play()
 
     # bounce against paddle
     if ball_x <= player1_x + PADDLE_WIDTH and player1_y <= ball_y <= player1_y + PADDLE_HEIGHT:
         BALL_SPEED_X *= -1
+        bounce.play()
     if ball_x >= player2_x and player2_y <= ball_y <= player2_y + PADDLE_HEIGHT:
         BALL_SPEED_X *= -1
+        bounce.play()
 
     ball_x += BALL_SPEED_X
     ball_y += BALL_SPEED_Y
