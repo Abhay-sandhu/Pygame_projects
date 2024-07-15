@@ -95,8 +95,8 @@ class Pipe(sprite.Sprite):
             self.height = random.randint(100, 300)
 
 
-def collision_check(rect, top_pipe_rect, bottom_pipe_rect):
-    if rect.colliderect(top_pipe_rect) or bird.rect.colliderect(bottom_pipe_rect):
+def collision_check(bird_rect, top_pipe_rect, bottom_pipe_rect):
+    if bird_rect.colliderect(top_pipe_rect) or bird_rect.colliderect(bottom_pipe_rect):
         collision_sound.play()
         return True
     return False
@@ -123,7 +123,7 @@ background = transform.scale(
 
 mixer.music.load("Flappy_birds/assets/A Short Walk With You.mp3")
 mixer.music.set_volume(VOLUME * 0.5)
-mixer.music.play(-1, 0, 4000)
+mixer.music.play(-1, 0, 2000)
 
 
 score_sound = mixer.Sound("Flappy_birds/assets/sfx_point.wav")
