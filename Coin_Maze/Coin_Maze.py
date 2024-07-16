@@ -1,4 +1,4 @@
-import random, pygame
+import pygame
 from pygame import (
     sprite,
     transform,
@@ -9,9 +9,9 @@ from pygame import (
     K_a,
     K_d,
     Rect,
-    draw,
     Color,
-    display
+    display,
+    Surface
 )
 
 WIDTH = 800
@@ -30,11 +30,13 @@ class Main(sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def update(self):
+    def game_end(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
 
 class Player(Main):
+    def __init__(self, x, y, speed, image_file='Coin_Maze/assets/miner.png'):
+        super().__init__(image_file, x, y, speed)
     def control(self):
         keys = key.get_pressed()
         if keys[K_w] and self.rect.y > 0:
@@ -48,41 +50,41 @@ class Player(Main):
 
 
 class Enemy(Main):
+    def __init__(self, x, y, speed, image_file='Coin_Maze/assets/ghost.png'):
+        super().__init__(image_file, x, y, speed)
     def update(self):
         self.rect.x += self.speed
-        self.rect.y += self.speed
 
-        if self.rect.x > WIDTH or self.rect.y > HEIGHT:
+        if self.rect.x > WIDTH - self.rect.width or self.rect.y > HEIGHT:
             self.speed *= -1
-        if self.rect.x < 0 or self.rect.y < 0:
+        if self.rect.x < 200 or self.rect.y < 0:
             self.speed *= -1
-
 
 class Coins(sprite.Sprite):
-    def __init__(self, image_file):
+    def __init__(self, x, y):
         super().__init__()
-        self.image = transform.scale(image.load(image_file), (20, 20))
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randint(0, WIDTH - self.rect.width)
-        self.rect.y = random.randint(0, HEIGHT - self.rect.height)
+        self.image = transform.scale(image.load('Coin_Maze/assets/dollar.png'), (25, 25))
+        self.rect = Rect(x,y, 25,25)
 
     def draw_coin(self):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image, (self.rect.x, self.rect.y))
 
-class Walls(sprite.Sprite):
+class Border(sprite.Sprite):
     def __init__(self, color, x, y, width, height):
         super().__init__()
-        self.color = color
-        self.wall = Rect(x, y, width, height)
+        self.width = width
+        self.height = height
+        self.wall = Surface((self.width, self.height))
+        self.wall.fill(color)
+        self.rect = self.wall.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
     def build_wall(self):
-        wall = draw.rect(screen, self.color, self.wall)
+        screen.blit(self.wall, (self.rect.x, self.rect.y))
 
 def game_init():
     pygame.init()
     pygame.mixer.init()
     pygame.font.init()
 
-
-if __name__ == "__main__":
-    pass
