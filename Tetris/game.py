@@ -1,4 +1,5 @@
 import pygame
+from pygame import draw
 from random import randint
 import Tetris
 
@@ -6,19 +7,19 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
-RED = (255, 0, 0, 255)     # Fully opaque red
-GREEN = (0, 255, 0, 255)   # Fully opaque green
-BLUE = (0, 0, 255, 255)    # Fully opaque blue
-WHITE = (255, 255, 255, 255) # Fully opaque white
-BG_COLOR = (31, 25, 76, 255)
-GRID = (31, 25, 132)
-
+RED = pygame.Color(255, 0, 0, 255)     # Fully opaque red
+GREEN = pygame.Color(0, 255, 0, 255)   # Fully opaque green
+BLUE = pygame.Color(0, 0, 255, 255)    # Fully opaque blue
+WHITE = pygame.Color(255, 255, 255, 255) # Fully opaque white
+BG_COLOR = pygame.Color(31, 25, 76, 255)
+GRID_COLOR = Tetris.GRID_COLOR
 
 SCORE = 0
 FPS = 60
 VOLUME = 0.03
-WIDTH = 800
-HEIGHT = 600
+BLOCK_SIZE = Tetris.BLOCK_SIZE
+WIDTH = Tetris.WIDTH
+HEIGHT = Tetris.HEIGHT
 
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('TETRIS!!!')
@@ -29,23 +30,16 @@ font.set_bold(True)
 win_text = font.render('YOU WIN!', 1, GREEN)
 lose_text = font.render('YOU LOSE!', 1, RED)
 
-#pygame.mixer.music.load('Tetris/assets/cave.mp3')
-#pygame.mixer.music.set_volume(VOLUME * 0.66)
-#pygame.mixer.music.play(-1, 0, 1000)
-
-#coin_sound = pygame.mixer.Sound('Tetris/assets/sfx_point.wav')
-#lose_sound = pygame.mixer.Sound('Tetris/assets/lose.wav')
-#win_sound = pygame.mixer.Sound('Tetris/assets/win.wav')
-
-#coin_sound.set_volume(VOLUME)
-#lose_sound.set_volume(VOLUME)
-#win_sound.set_volume(VOLUME)
+def create_drop_zone(X,Y):
+        for x in range(X, X + BLOCK_SIZE * 5, BLOCK_SIZE):
+            draw.line(screen, RED, (x, 0), (x, Y + BLOCK_SIZE * 4))
+        for y in range(Y, Y + BLOCK_SIZE * 5, BLOCK_SIZE):
+            draw.line(screen, RED, (X, y), (X + BLOCK_SIZE * 4, y))
 
 
-
-
-
-end = False
+game = Tetris.Game()
+shape = Tetris.Shape()
+end = game.end
 run = True
 while run:
     for event in pygame.event.get():
@@ -53,6 +47,10 @@ while run:
             run = False
     if end != True:
         screen.fill(BG_COLOR)
+        game.create_grid()
+        game.create_panel()
+        shape.drop()
+        create_drop_zone(Tetris.drop_zone_x, Tetris.drop_zone_y)
     else:
         end = False
 
