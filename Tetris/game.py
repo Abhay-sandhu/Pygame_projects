@@ -10,12 +10,12 @@ class Game():
     WHITE = pygame.Color(255, 255, 255, 255) # Fully opaque white
     BG_COLOR = pygame.Color(31, 25, 76, 255)
     GRID_COLOR = pygame.Color(31, 25, 132, 255)
-    PANEL_COLOR = pygame.Color(25,25,25,255)
+    PANEL_COLOR = pygame.Color(25,19,70,255)
     SCORE = 0
     FPS = 60
     VOLUME = 0.03
     BLOCK_SIZE = 20
-    WIDTH = 400
+    WIDTH = 420
     HEIGHT = 560
     PANEL_SIZE = 160
     ROWS = (HEIGHT - PANEL_SIZE) // BLOCK_SIZE
@@ -50,11 +50,14 @@ class Game():
         self.font.set_bold(True)
         self.win_label = self.font.render('YOU WIN!', 1, Game.GREEN)
         self.lose_label = self.font.render('YOU LOSE!', 1, Game.RED)
+        
+
         #self.play_bgm()
         self.new_game()
 
     def new_game(self):
         self.score = 0
+        self.shape = Shape(self)
     
    # def play_bgm(self):
        # pygame.mixer.music.load('Snake/assets/music.mp3')
@@ -68,6 +71,10 @@ class Game():
         pygame.draw.rect(self.screen, Game.PANEL_COLOR,(0, self.height - self.panel_size, self.width, self.panel_size))
 
     def update(self):
+        self.shape.update()
+        if self.shape.row == 19:
+            pygame.time.delay(500)
+            self.new_game()
         pygame.display.update()
         self.clock.tick(Game.FPS)
 
@@ -76,7 +83,7 @@ class Game():
         self.draw_grid()
         self.draw_panel()
         score_text = self.font.render(f"SCORE: {self.score}", 1, Game.WHITE)
-        self.screen.blit(score_text, (self.width - score_text.get_width() - 50, self.height - self.panel_size/2))
+        self.screen.blit(score_text, (self.width - score_text.get_width() - 10, self.height - self.panel_size/3 - score_text.get_height()/2))
 
     
     def event_check(self, run):
@@ -84,6 +91,7 @@ class Game():
             if event.type == pygame.QUIT:
                 run = False
                 return run
+        self.shape.control()
         return run
     
     def run(self):
