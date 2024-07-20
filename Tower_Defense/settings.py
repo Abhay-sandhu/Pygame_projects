@@ -1,8 +1,11 @@
 
 #Window settings
 WIDTH = 600
-HEIGHT = 600
+HEIGHT = 700
 FPS = 60
+
+ENEMY_SIZE = 70
 
 #Colors
 BG_COLOR = (150, 100, 200, 200)
+PATH_COLOR = (255,255,255,255)
