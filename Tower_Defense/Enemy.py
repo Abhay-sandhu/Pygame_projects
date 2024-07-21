@@ -25,7 +25,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def move(self):
         try:
-            draw.lines(self.game.screen, PATH_COLOR, False, self.waypoints)
+            draw.lines(self.game.screen, PATH_COLOR, False, self.waypoints, 2)
             self.target = Vector2(self.waypoints[self.target_waypoint])
             dist = self.target - self.pos
             if dist.length() > 0:

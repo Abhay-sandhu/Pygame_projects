@@ -7,6 +7,7 @@ class Turret(sprite.Sprite):
     def __init__(self, game, tile):
         super().__init__()
         self.game = game
+        self.tile = tile
         self.pos = Vector2((tile[0] + 0.5) * TILE_SIZE, (tile[1] + 0.5) * TILE_SIZE)
         self.image = transform.scale(image.load(TURRET_1).convert_alpha(), (100, 100))
         self.rect = self.image.get_rect()

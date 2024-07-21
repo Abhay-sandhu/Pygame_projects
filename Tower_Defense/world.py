@@ -28,9 +28,7 @@ class World:
                     self.waypoints = obj["polyline"]
                     self.process_waypoints()
             if layer["name"] == "tilemap":
-                self.tile_data = layer["data"]
-                self.process_tile_data()
-                print(self.tile_data)
+                self.tile_map = layer["data"]
 
     def process_waypoints(self):
         temp = []
@@ -38,11 +36,3 @@ class World:
             temp.append(Vector2(waypoint.get("x"), waypoint.get("y")))
         self.waypoints = temp
 
-    def process_tile_data(self):
-        temp = []
-        for row in range(ROWS):
-            tile_row = []
-            for col in range(COLS):
-                tile_row.append(self.tile_data[row * 15 + col])
-            temp.append(tile_row)
-        self.tile_data = temp
