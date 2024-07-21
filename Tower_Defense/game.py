@@ -21,25 +21,25 @@ class Game:
         self.clock = time.Clock()
         self.font = font.SysFont("Comic Sans MS", 40, bold=True)
         self.font_small = font.SysFont("Comic Sans MS", 20)
+
+        self.placing_turrets = False
+
         self.new_game()
 
     def new_game(self):
         self.world = World(self)
-        self.button_group = sprite.Group()
         self.add_buttons()
         self.enemy_group = sprite.Group()
         self.turret_group = sprite.Group()
         self.enemy_group.add(Enemy(self))
 
     def add_buttons(self):
-    
         self.buy_turret_btn = Button(self, BUY_TURRET_BTN, (WIDTH + SIDE_PANEL/2, 100))
         self.upgrade_turret_btn = Button(self, UPGRADE_TURRET_BTN , (WIDTH + SIDE_PANEL/2, 200))
         self.cancel_btn = Button(self, CANCEL_BTN, (WIDTH + SIDE_PANEL/2, 300))
         self.fast_forward_btn = Button(self, FAST_FORWARD_BTN, (WIDTH + SIDE_PANEL/2, 400))
         self.restart_btn = Button(self, RESTART_BTN, (WIDTH + SIDE_PANEL/2, 500))
         self.start_btn = Button(self, START_BTN, (WIDTH + SIDE_PANEL/2, 600))
-        self.button_group.add([self.buy_turret_btn, self.upgrade_turret_btn, self.cancel_btn, self.fast_forward_btn, self.restart_btn, self.start_btn])
 
     def create_turret(self, mouse_pos):
         mouse_tile = (mouse_pos[0]//TILE_SIZE, mouse_pos[1]//TILE_SIZE)
@@ -52,6 +52,7 @@ class Game:
             if space_is_free:
                 turret = Turret(self, mouse_tile)
                 self.turret_group.add(turret)
+                self.placing_turrets = False
 
 
     def highlight_grid(self):
@@ -86,8 +87,17 @@ class Game:
         self.world.draw()
         self.turret_group.draw(self.screen)
         self.enemy_group.draw(self.screen)
-        self.button_group.draw(self.screen)
         
+        # buttons
+        if self.buy_turret_btn.draw():
+            self.placing_turrets = True
+        
+        if self.placing_turrets:
+            cursor_turret = image.load(TURRET_1).convert_alpha()
+            cursor_rect = cursor_turret.get_rect()
+            cursor_rect.center = pygame.mouse.get_pos()
+            self.screen.blit(cursor_turret, cursor_rect)
+            
 
     def event_handler(self):
         for event in pygame.event.get():
@@ -98,10 +108,10 @@ class Game:
                 exit()
 
             # add turret
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0] == 1:
                 mouse_pos = pygame.mouse.get_pos()
-                self.create_turret(mouse_pos)
-                self.button_group.update()
+                if self.placing_turrets:
+                    self.create_turret(mouse_pos)
 
     def run(self):
         while True:

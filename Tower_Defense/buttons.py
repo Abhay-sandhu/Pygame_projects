@@ -12,8 +12,15 @@ class Button(sprite.Sprite):
         self.single_click = single_click
         self.clicked = False
 
-    def update(self):
-        self.clicked = False
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and self.clicked == False:
+    def draw(self):
+        action = False
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+            action = True
             if self.single_click:
                 self.clicked = True
+
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        
+        self.game.screen.blit(self.image, self.rect)
+        return action
