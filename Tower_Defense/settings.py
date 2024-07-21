@@ -1,7 +1,10 @@
 import random, pygame
-#Window settings
-WIDTH = 800
-HEIGHT = 650
+#Window and World settings
+ROWS = 15
+COLS = 15
+TILE_SIZE = 48
+WIDTH = COLS * TILE_SIZE
+HEIGHT = ROWS * TILE_SIZE
 FPS = 60
 
 # enemy settings

@@ -1,6 +1,7 @@
 import pygame
-from pygame import image, transform, font, mixer, time, display, sprite, event
-from Enemy import Enemy
+from pygame import font, mixer, time, display, sprite, event
+from enemy import Enemy
+from world import World
 from settings import *
 
 class Game():
@@ -19,7 +20,7 @@ class Game():
         self.new_game()
 
     def new_game(self):
-        self.level = transform.scale(image.load(LEVEL_1), (WIDTH, HEIGHT))
+        self.world = World(self)
         self.enemy_group = sprite.Group()
         self.enemy = Enemy(self)
         self.enemy_group.add(self.enemy)
@@ -30,8 +31,9 @@ class Game():
         self.clock.tick(FPS)
     
     def draw(self):
-        self.screen.blit(self.level, (0,0))
+        self.world.draw()
         self.enemy_group.draw(self.screen)
+        print(pygame.display.Info())
 
     def event_handler(self):
         for e in event.get():
