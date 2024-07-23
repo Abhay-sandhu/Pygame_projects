@@ -1,5 +1,5 @@
 import pygame
-from pygame import transform, image, sprite
+from pygame import image, sprite
 from settings import *
 
 class Button(sprite.Sprite):
