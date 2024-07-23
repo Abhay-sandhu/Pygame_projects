@@ -1,4 +1,3 @@
-from tkinter import W
 import pygame
 from pygame import font, mixer, time, display, sprite, image, Rect
 from enemy import Enemy
@@ -43,9 +42,9 @@ class Game:
     def add_buttons(self):
         self.buy_turret_btn = Button(self, BUY_TURRET_BTN, (WIDTH + SIDE_PANEL/2 - 30, 120))
         self.upgrade_turret_btn = Button(self, UPGRADE_TURRET_BTN , (WIDTH + SIDE_PANEL/2, 220))
-        #self.cancel_btn = Button(self, CANCEL_BTN, (WIDTH + SIDE_PANEL/2, 300))
+        self.cancel_btn = Button(self, CANCEL_BTN, (WIDTH + SIDE_PANEL/2, 220))
         self.fast_forward_btn = Button(self, FAST_FORWARD_BTN, (WIDTH + SIDE_PANEL/2, 400))
-        self.restart_btn = Button(self, RESTART_BTN, (WIDTH + SIDE_PANEL/2, 480))
+        self.restart_btn = Button(self, RESTART_BTN, (WIDTH//2, HEIGHT//2 + 100))
         self.start_btn = Button(self, START_BTN, (WIDTH + SIDE_PANEL/2, 400))
 
     def draw_text(self, text, font, color, x,y):
@@ -119,20 +118,21 @@ class Game:
         self.screen.fill(BG_COLOR)
         pygame.draw.line(self.screen, WHITE, (WIDTH, 0), (WIDTH, HEIGHT), 4)
         self.world.draw()
-
+        self.screen.blit(pygame.transform.scale(image.load(GAME_LOGO).convert_alpha(), (SIDE_PANEL, HEIGHT-400)), (WIDTH + 5, 430))
         self.screen.blit(image.load(HEART).convert_alpha(), (WIDTH + 10, 10))
         self.screen.blit(image.load(COIN).convert_alpha(), (WIDTH + 10, 40))
         self.draw_text(f"HEALTH :{self.world.health}", self.font, (200, 40, 40), WIDTH + 50, 15)
         self.draw_text(f"MONEY :{self.world.money}", self.font, (255, 215, 0), WIDTH + 50, 46)
-        
+        self.draw_text(f"LEVEL:{self.world.level_number}", self.font, (0,0,0), WIDTH + 75, 340)
         self.screen.blit(image.load(COIN).convert_alpha(), (WIDTH + 20, 150))
         self.draw_text(f"COST {BUY_COST}", self.font, (255, 215, 0), WIDTH + 55, 157)
         
         
         if self.world.health <= 0:
-            self.draw_text(f"GAME_OVER", self.font_large, (0,0,0,255), WIDTH//2 - 18* 8, HEIGHT//2 -18)
-            pygame.time.delay(1500)
-            self.new_game()
+            pygame.draw.rect(self.screen, (100, 200, 150, 200), (WIDTH//4, HEIGHT//4, WIDTH//2, HEIGHT//2),0, border_radius=30)
+            self.draw_text(f"GAME_OVER", self.font_large, (0,0,0,255), WIDTH//2 - 18* 6, HEIGHT//2 -18)
+            if self.restart_btn.draw():
+                self.new_game()
 
         for turret in self.turret_group:
             turret.draw(self.screen)
@@ -152,8 +152,9 @@ class Game:
 
 
         # buttons
-        if self.restart_btn.draw():
-            pass
+        if self.placing_turrets and self.world.money >= BUY_COST:
+            if self.cancel_btn.draw():
+                self.placing_turrets = False
 
         if self.buy_turret_btn.draw():
             self.placing_turrets = True
