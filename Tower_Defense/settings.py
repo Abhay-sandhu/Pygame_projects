@@ -17,7 +17,9 @@ WAY_POINTS = [(random.randint(0, WIDTH), random.randint(0, HEIGHT)) for _ in ran
 ENEMY_1 = "Tower_Defense\\assets\images\enemies\enemy_1.png"
 
 # turret settings
-TURRET_1 = "Tower_Defense\\assets\images\\turrets\cursor_turret.png"
+CURSOR_TURRET = "Tower_Defense\\assets\images\\turrets\cursor_turret.png"
+ANIMATION_STEPS = 8
+TURRET_1 = "Tower_Defense\\assets\images\\turrets\\turret_1.png"
 
 
 # Button settings

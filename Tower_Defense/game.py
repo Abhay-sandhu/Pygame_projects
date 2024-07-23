@@ -92,8 +92,8 @@ class Game:
         if self.buy_turret_btn.draw():
             self.placing_turrets = True
         
-        if self.placing_turrets:
-            cursor_turret = image.load(TURRET_1).convert_alpha()
+        if self.placing_turrets and pygame.mouse.get_pos()[0] < WIDTH:
+            cursor_turret = image.load(CURSOR_TURRET).convert_alpha()
             cursor_rect = cursor_turret.get_rect()
             cursor_rect.center = pygame.mouse.get_pos()
             self.screen.blit(cursor_turret, cursor_rect)
